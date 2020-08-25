@@ -161,17 +161,18 @@ namespace TextEditer31131
             }
 
             //切り取り コピー 削除
-            if (rtTextArea.SelectedText == "")
+            if (rtTextArea.SelectionLength>0)
+            {
+                CutToolStripMenuItem.Enabled = true;
+                CopyToolStripMenuItem.Enabled = true;
+                DeleteToolStripMenuItem.Enabled = true;
+            }
+            else
             {
                 CutToolStripMenuItem.Enabled = false;
                 CopyToolStripMenuItem.Enabled = false;
                 DeleteToolStripMenuItem.Enabled = false;
-            }
-            else
-            {
-                 CutToolStripMenuItem.Enabled = true;
-                CopyToolStripMenuItem.Enabled = true;
-                DeleteToolStripMenuItem.Enabled = true;
+
             }
 
             //貼り付け
@@ -203,6 +204,29 @@ namespace TextEditer31131
                 //フォントを選択する
                 rtTextArea.SelectionFont = fdFont.Font;
             }
+        }
+
+        private void fcSave(object sender, FormClosedEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("保存しますか？",
+                                                     "警告",
+                                                    MessageBoxButtons.YesNoCancel,
+                                                    MessageBoxIcon.Warning,
+                                                    MessageBoxDefaultButton.Button2,
+                                                    MessageBoxOptions.RtlReading);
+
+            //何が選択されたか調べる
+            if (result == DialogResult.Yes)
+            {
+                //「はい」が選択された時
+                SaveToolStripMenuItem_Click(sender, e);
+            }
+            else if (result == DialogResult.No)
+            {
+                //「いいえ」が選択された時
+                Application.Exit();
+            }
+
         }
     }
 }

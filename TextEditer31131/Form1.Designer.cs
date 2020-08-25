@@ -261,6 +261,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "テキストエディタ";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.fcSave);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
