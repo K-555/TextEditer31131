@@ -15,19 +15,12 @@ namespace TextEditer31131
     {
         //現在編集中のファイル名
         private string fileName = "";   //Camel形式（⇔Pascal形式）
+
         public Form1()
         {
             InitializeComponent();
-            Form();
         }
         
-        private void Form()
-        {
-            if (fileName == "")
-            {
-               
-            }
-        }
 
         //終了
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -59,6 +52,7 @@ namespace TextEditer31131
                     rtTextArea.Text = sr.ReadToEnd();
                     //現在開いているファイル名を設定
                     this.fileName = ofdFileOpen.FileName;
+                    Text = Path.GetFileName(ofdFileOpen.FileName);
                 }
             }
         }
@@ -96,8 +90,115 @@ namespace TextEditer31131
                                                       Encoding.GetEncoding("utf-8")))
             {
                 sw.WriteLine(rtTextArea.Text);
+                Text = Path.GetFileName(fileName);
             }
         }
 
+        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtTextArea.Text = "";
+            Text = "無題";
+        }
+
+        //元に戻す
+        private void UndoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           rtTextArea.Undo();
+        }
+
+        //やり直し
+        private void RedoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtTextArea.Redo();
+        }
+
+        //切り取り
+        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtTextArea.Cut();
+        }
+
+        //コピー
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtTextArea.Copy();
+        }
+
+        //貼り付け
+        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtTextArea.Paste();
+        }
+
+        //削除
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rtTextArea.SelectedText = "";
+        }
+
+        private void EditToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //元に戻す
+            if (rtTextArea.CanUndo)
+            {
+                UndoToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                UndoToolStripMenuItem.Enabled = false;
+            }
+
+            //やり直し
+            if (rtTextArea.CanRedo)
+            {
+                RedoToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                RedoToolStripMenuItem.Enabled = false;
+            }
+
+            //切り取り コピー 削除
+            if (rtTextArea.CanSelect)
+            {
+                CutToolStripMenuItem.Enabled = true;
+                CopyToolStripMenuItem.Enabled = true;
+                DeleteToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                 CutToolStripMenuItem.Enabled = false;
+                CopyToolStripMenuItem.Enabled = false;
+                DeleteToolStripMenuItem.Enabled = false;
+            }
+
+            //貼り付け
+            if (Clipboard.ContainsText())
+            {
+                PasteToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                 PasteToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private void ColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (cdCollar.ShowDialog() == DialogResult.OK)
+            {
+                //色を選択する
+                rtTextArea.SelectionColor = cdCollar.Color;
+            }
+        }
+
+        private void FontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (fdFont.ShowDialog() == DialogResult.OK)
+            {
+                //フォントを選択する
+                rtTextArea.SelectionFont = fdFont.Font;
+            }
+        }
     }
 }
