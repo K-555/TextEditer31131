@@ -94,10 +94,12 @@ namespace TextEditer31131
             }
         }
 
+        //新規作成
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             rtTextArea.Text = "";
             Text = "無題";
+
         }
 
         //元に戻す
@@ -159,17 +161,17 @@ namespace TextEditer31131
             }
 
             //切り取り コピー 削除
-            if (rtTextArea.CanSelect)
+            if (rtTextArea.SelectedText == "")
             {
-                CutToolStripMenuItem.Enabled = true;
-                CopyToolStripMenuItem.Enabled = true;
-                DeleteToolStripMenuItem.Enabled = true;
+                CutToolStripMenuItem.Enabled = false;
+                CopyToolStripMenuItem.Enabled = false;
+                DeleteToolStripMenuItem.Enabled = false;
             }
             else
             {
-                 CutToolStripMenuItem.Enabled = false;
-                CopyToolStripMenuItem.Enabled = false;
-                DeleteToolStripMenuItem.Enabled = false;
+                 CutToolStripMenuItem.Enabled = true;
+                CopyToolStripMenuItem.Enabled = true;
+                DeleteToolStripMenuItem.Enabled = true;
             }
 
             //貼り付け
@@ -183,6 +185,7 @@ namespace TextEditer31131
             }
         }
 
+        //色
         private void ColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (cdCollar.ShowDialog() == DialogResult.OK)
@@ -192,6 +195,7 @@ namespace TextEditer31131
             }
         }
 
+        //フォント
         private void FontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (fdFont.ShowDialog() == DialogResult.OK)
