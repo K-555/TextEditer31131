@@ -15,6 +15,7 @@ namespace TextEditer31131
     {
         //現在編集中のファイル名
         private string fileName = "";   //Camel形式（⇔Pascal形式）
+        private bool HozonFlg;
 
         public Form1()
         {
@@ -97,6 +98,7 @@ namespace TextEditer31131
         //新規作成
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SaveConfirmation(sender, e);
             rtTextArea.Text = "";
             Text = "無題";
 
@@ -138,52 +140,10 @@ namespace TextEditer31131
             rtTextArea.SelectedText = "";
         }
 
+        //編集
         private void EditToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //元に戻す
-            if (rtTextArea.CanUndo)
-            {
-                UndoToolStripMenuItem.Enabled = true;
-            }
-            else
-            {
-                UndoToolStripMenuItem.Enabled = false;
-            }
-
-            //やり直し
-            if (rtTextArea.CanRedo)
-            {
-                RedoToolStripMenuItem.Enabled = true;
-            }
-            else
-            {
-                RedoToolStripMenuItem.Enabled = false;
-            }
-
-            //切り取り コピー 削除
-            if (rtTextArea.SelectionLength>0)
-            {
-                CutToolStripMenuItem.Enabled = true;
-                CopyToolStripMenuItem.Enabled = true;
-                DeleteToolStripMenuItem.Enabled = true;
-            }
-            else
-            {
-                CutToolStripMenuItem.Enabled = false;
-                CopyToolStripMenuItem.Enabled = false;
-                DeleteToolStripMenuItem.Enabled = false;
-
-            }
-
-            //貼り付け
-            if (Clipboard.ContainsText())
-            {
-                PasteToolStripMenuItem.Enabled = true;
-            }
-            else
-            {
-                 PasteToolStripMenuItem.Enabled = false;
-            }
+            EditMaskCheck();
         }
 
         //色
@@ -206,27 +166,58 @@ namespace TextEditer31131
             }
         }
 
-        private void fcSave(object sender, FormClosedEventArgs e)
+        private void rtTextArea_TextChanged(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("保存しますか？",
-                                                     "警告",
-                                                    MessageBoxButtons.YesNoCancel,
-                                                    MessageBoxIcon.Warning,
-                                                    MessageBoxDefaultButton.Button2,
-                                                    MessageBoxOptions.RtlReading);
+            HozonFlg = true;
+        }
 
-            //何が選択されたか調べる
-            if (result == DialogResult.Yes)
-            {
-                //「はい」が選択された時
-                SaveToolStripMenuItem_Click(sender, e);
-            }
-            else if (result == DialogResult.No)
-            {
-                //「いいえ」が選択された時
-                Application.Exit();
-            }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            HozonFlg = false; //まずフラグを準備する
+        }
 
+        private void SaveConfirmation(object sender, EventArgs e)
+        {
+            {
+                if (HozonFlg == true)
+                {
+                    DialogResult result = MessageBox.Show("テキストが保存されていません。保存しますか？",
+                                                           "テキストを保存しますか？",
+                                                           MessageBoxButtons.YesNoCancel,
+                                                           MessageBoxIcon.Exclamation);
+                    if (result == DialogResult.Yes)
+                    {
+                        // 保存処理
+                        SaveNameToolStripMenuItem_Click(sender, e);
+                    }
+                    else if (result == DialogResult.No)
+                    {
+
+                    }
+                    else
+                    {
+                        // 保存キャンセル処理
+                        
+                    }
+                }
+            }
+        }
+
+        private void fcSave(object sender, FormClosingEventArgs e)
+        {
+            SaveConfirmation(sender, e);
+        }
+
+        //編集メニュー項目内のマスク処理
+        private void EditMaskCheck()
+        {
+            DataFormats.Format myFormat = DataFormats.GetFormat(DataFormats.Rtf);
+            UndoToolStripMenuItem.Enabled = rtTextArea.CanUndo ? true : false;
+            RedoToolStripMenuItem.Enabled = rtTextArea.CanRedo ? true : false;
+            CutToolStripMenuItem.Enabled = rtTextArea.SelectionLength > 0 ? true : false;
+            CopyToolStripMenuItem.Enabled = rtTextArea.SelectionLength > 0 ? true : false;
+            DeleteToolStripMenuItem.Enabled = rtTextArea.SelectionLength > 0 ? true : false;
+            PasteToolStripMenuItem.Enabled = rtTextArea.CanPaste(myFormat) ? true : false;
         }
     }
 }
